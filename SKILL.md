@@ -1,8 +1,13 @@
 ---
 name: avoid-ai-writing
 description: Audit and rewrite content to remove AI writing patterns ("AI-isms"). Use this skill when asked to "remove AI-isms," "clean up AI writing," "edit writing for AI patterns," "audit writing for AI tells," or "make this sound less like AI."
-version: 2.2.0
+version: 3.0.0
+license: MIT
+compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
 metadata:
+  author: Conor Bronsdon
+  tags: writing editing voice quality
+  agentskills_spec: "1.0"
   openclaw:
     emoji: "\u270D\uFE0F"
 ---
@@ -247,6 +252,18 @@ These slot-fill constructions signal that a sentence was generated, not written.
 - This pattern isn't always AI. It's also a sign of lazy human writing on autopilot. Flag it either way.
 - The fix isn't "never say surprised." It's: if you claim an emotion, the writing around it should earn it. Otherwise cut the claim and present the thing directly.
 
+### False concession structure
+- "While X is impressive, Y remains a challenge" or "Although X has made strides, Y is still an open question." AI uses this to sound balanced without actually weighing anything. Both halves are vague. Either make the concession specific (name what's impressive, name the actual challenge) or pick a side and argue it.
+
+### Rhetorical question openers
+- "But what does this mean for developers?" / "So why should you care?" / "What's next?" — AI uses rhetorical questions to stall before the actual point. If you know the answer, just say it. Rhetorical questions are earned by strong setup, not dropped as section transitions.
+
+### Parenthetical hedging
+- "(and, increasingly, Z)" / "(or, more precisely, Y)" / "(and perhaps more importantly, W)" — AI inserts parenthetical asides to sound nuanced without committing. If the aside matters, give it its own sentence. If it doesn't, cut it.
+
+### Numbered list inflation
+- "Three key takeaways" / "Five things to know" / "Here are the top seven" — AI defaults to numbered lists because they're structurally safe. Only use numbered lists when the content genuinely has that many discrete, parallel items. If you're padding to hit a number, the list shouldn't exist.
+
 ### Reasoning chain artifacts
 - "Let me think step by step," "Breaking this down," "To approach this systematically," "Step 1:," "Here's my thought process," "First, let's consider," "Working through this logically" â€” these are artifacts of chain-of-thought reasoning leaking into published prose. The reader doesn't need to see the scaffolding. State the conclusion, then the evidence.
 - Also watch for numbered reasoning steps that read like an internal monologue rather than an argument meant for an audience.
@@ -283,6 +300,99 @@ These aren't individual word or phrase problems â€” they're patterns in how the 
 If the text has 5+ flagged vocabulary hits across multiple categories, 3+ distinct pattern categories triggered, and uniform sentence/paragraph length, patching individual phrases won't fix it â€” the structure itself is AI-generated. Advise a full rewrite: state the core point in one sentence, then rebuild from there.
 
 ---
+
+## Severity tiers
+
+Not all AI-isms are equal. When doing a quick pass or triaging a large document, prioritize by tier:
+
+### P0 — Credibility killers (fix immediately)
+- Cutoff disclaimers ("As of my last update")
+- Chatbot artifacts ("I hope this helps!", "Great question!")
+- Vague attributions without sources ("Experts believe")
+- Significance inflation on routine events
+
+### P1 — Obvious AI smell (fix before publishing)
+- Word-list violations (delve, leverage, harness, robust, etc.)
+- Template phrases and slot-fill constructions
+- "Let's" transition openers
+- Synonym cycling within a paragraph
+- Formulaic openings ("In the rapidly evolving world of...")
+- Bold overuse
+- Em dash frequency (above 1 per 1,000 words)
+
+### P2 — Stylistic polish (fix when time allows)
+- Generic conclusions ("The future looks bright")
+- Compulsive rule of three
+- Uniform paragraph length
+- Copula avoidance (serves as, features, boasts)
+- Transition phrases (Moreover, Furthermore, Additionally)
+
+Use P0+P1 for quick passes. Full audit covers all three tiers.
+
+---
+
+## Self-reference escape hatch
+
+When writing *about* AI writing patterns (blog posts, tutorials, skill documentation like this file), quoted examples are exempt from flagging. Text inside quotation marks, code blocks, or explicitly marked as illustrative ("for example, AI might write...") should not be rewritten. Only flag patterns that appear in the author's own prose, not in cited examples of bad writing.
+
+---
+
+## Context profiles
+
+Pass an optional context hint to adjust rule strictness. If no context is specified, auto-detect from content cues (short + hashtags = social, code blocks = technical, salutation = email, default = blog).
+
+### Profile definitions
+
+**`linkedin`** — Short-form social. Punchy fragments, visual formatting matter.
+**`blog`** — Default. Standard long-form prose. All rules apply at full strength.
+**`technical-blog`** — Long-form with code, architecture, APIs. Technical terms get a pass.
+**`investor-email`** — High-trust audience. Tighten everything; promotional language is the biggest risk.
+**`docs`** — Documentation, READMEs, guides. Clarity over voice.
+**`casual`** — Slack messages, internal notes, quick replies. Only catch the worst offenders.
+
+### Tolerance matrix
+
+Rules not listed in the table apply at full strength across all profiles.
+
+| Rule | linkedin | blog | technical-blog | investor-email | docs | casual |
+|------|----------|------|----------------|----------------|------|--------|
+| Em dashes | relaxed (2/post OK) | strict | strict | strict | relaxed | skip |
+| Bold overuse | relaxed (bold hooks OK) | strict | strict | strict | relaxed | skip |
+| Emoji in headers | relaxed (1-2 end-of-line OK) | strict | strict | strict | skip | skip |
+| Excessive bullets | skip (lists work on LinkedIn) | strict | relaxed (technical lists OK) | strict | skip (lists are docs) | skip |
+| Hedging | strict | strict | relaxed ("may" is accurate in technical) | strict | relaxed | skip |
+| Word table (full list) | strict | strict | **partial** (see below) | strict | relaxed | P0 only |
+| Promotional language | relaxed (some sell is expected) | strict | strict | **extra strict** | strict | skip |
+| Significance inflation | strict | strict | strict | **extra strict** | relaxed | skip |
+| Copula avoidance | skip | strict | relaxed | strict | skip | skip |
+| Uniform paragraph length | skip (short-form) | strict | strict | strict | relaxed | skip |
+| Numbered list inflation | relaxed | strict | relaxed | strict | skip | skip |
+| Rhetorical questions | relaxed (1 as hook OK) | strict | strict | strict | strict | skip |
+| Transition phrases | skip (short-form) | strict | strict | strict | relaxed | skip |
+| Generic conclusions | skip | strict | strict | **extra strict** | skip | skip |
+
+**Technical-blog word table exceptions:** These terms have legitimate technical meaning and should not be flagged in technical context: `robust`, `comprehensive`, `seamless`, `ecosystem`, `leverage` (when discussing actual platform leverage/APIs), `facilitate`, `underpin`, `streamline`. Still flag: `delve`, `tapestry`, `beacon`, `embark`, `testament to`, `game-changer`, `harness`.
+
+**"Extra strict"** means: flag even borderline instances. In investor emails, a single "thriving ecosystem" can undermine the whole message.
+
+**"Skip"** means: don't audit this category for this profile. The rule doesn't apply or isn't worth the edit.
+
+### Auto-detection cues
+
+When no context is specified, infer from these signals:
+
+| Signal | Inferred context |
+|--------|-----------------|
+| Under 300 words + hashtags or mentions | `linkedin` |
+| Code blocks, API references, or technical architecture | `technical-blog` |
+| Salutation ("Hi [name]", "Dear") + investor/fundraising language | `investor-email` |
+| Step-by-step instructions, parameter docs, README structure | `docs` |
+| No strong signals | `blog` (safest default — all rules apply) |
+
+If auto-detection feels wrong, say which profile you're using and why. The user can override.
+
+---
+
 
 ## Output format
 
