@@ -2,7 +2,7 @@
 
 # avoid-ai-writing
 
-Audit & rewrite content to remove AI writing patterns. A practical skill for any AI assistant. Supports detection-only mode.
+Audit & rewrite content to remove AI writing patterns. A practical skill for Codex. Supports detection-only mode.
 
 [![GitHub stars](https://img.shields.io/github/stars/conorbronsdon/avoid-ai-writing?style=social)](https://github.com/conorbronsdon/avoid-ai-writing/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
@@ -10,14 +10,11 @@ Audit & rewrite content to remove AI writing patterns. A practical skill for any
 [![Web App](https://img.shields.io/badge/Try_the_web_app-ff6b35?style=flat-square&logo=vercel&logoColor=white)](https://avoid-ai-writing-app.vercel.app)
 
 </div>
-<div align="center">
-The community made a meme coin to support the project🤯 CA: BsidWuYJnayqMXVsLGr34524vmZ1BrWFhPer3198pump
-</div>
 
 ---
 
 
-A portable writing skill for [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenClaw](https://github.com/openclaw/openclaw), [Hermes](https://github.com/NousResearch/hermes-agent), and any other [agentskills.io](https://agentskills.io)-compatible agent. Audits and rewrites content to remove AI writing patterns ("AI-isms").
+Adapted from the original [avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing) repository for local use in Codex. Audits and rewrites content to remove AI writing patterns ("AI-isms").
 
 **Two modes:**
 - **Rewrite** (default) — flags AI patterns and rewrites the text to fix them. A built-in second pass catches patterns that survived the first edit.
@@ -42,64 +39,44 @@ A one-shot "make this sound human" prompt catches the obvious stuff. This skill 
 - **109-entry word replacement table across 3 tiers** — not vibes-based. Every flagged word has a specific, plainer alternative. "Leverage" → "use." "Commence" → "start." Tier 1 words are always flagged, Tier 2 words flag when they cluster, Tier 3 words flag only at high density. This reduces false positives while catching real AI tells.
 - **36 pattern categories** — see the full list below, each with before/after examples. Includes rhythm/uniformity checks and a rewrite-vs-patch threshold.
 - **Detect mode** — flag patterns without rewriting. See which flags are real problems vs. judgment calls. Useful when patterns might be intentional or you're auditing content you don't want altered.
-- **Works with Claude Code and OpenClaw** — single `SKILL.md` with compatible frontmatter for both platforms.
+- **Works in Codex** — packaged as `SKILL.md` plus `agents/openai.yaml` for local skill usage.
 
 ## Installation & Usage
 
-### Claude Code
+### Codex
 
-**Option 1: Clone into skills directory**
-
-```bash
-git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.claude/skills/avoid-ai-writing
-```
-
-**Option 2: Copy the file directly**
-
-Download `SKILL.md` and place it in any directory that Claude Code can read. Reference it in your `CLAUDE.md`:
-
-```markdown
-- Editing for AI patterns → read `path/to/avoid-ai-writing/SKILL.md`
-```
-
-**Option 3: Use as a slash command**
-
-Create a command file (e.g., `~/.claude/commands/clean-ai-writing.md`):
-
-```markdown
----
-description: Audit and rewrite content to remove AI writing patterns
----
-
-$ARGUMENTS
-
-Read and follow the instructions in ~/.claude/skills/avoid-ai-writing/SKILL.md
-```
-
-Then use `/clean-ai-writing <your text>` in Claude Code.
-
-### OpenClaw
-
-**Option 1: [Install from ClawHub](https://clawhub.ai/conorbronsdon/avoid-ai-writing)**
+**Option 1: Install into your Codex skills directory**
 
 ```bash
-clawhub install avoid-ai-writing
+git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.codex/skills/avoid-ai-writing
 ```
 
-**Option 2: Clone into skills directory**
+**Option 2: Copy the skill folder manually**
 
-```bash
-git clone https://github.com/conorbronsdon/avoid-ai-writing ~/.openclaw/skills/avoid-ai-writing
+Download or clone the repository, then place the skill folder at:
+
+```text
+~/.codex/skills/avoid-ai-writing
 ```
+
+For this Codex-adapted version, the important files are:
+
+- `SKILL.md`
+- `agents/openai.yaml`
+- `README.md`
+- `LICENSE`
+
+If you edit the skill files, restart Codex so it reloads the updated metadata and instructions.
 
 ### Triggering the skill
 
-Once installed, ask your assistant to clean up AI writing:
+Once installed, ask Codex to clean up AI writing:
 
-- "Remove AI-isms from this post"
-- "Audit this draft for AI tells"
-- "Make this sound less like AI"
-- "Clean up AI writing in this paragraph"
+- "Use $avoid-ai-writing to remove AI-isms from this post"
+- "Use $avoid-ai-writing to audit this draft for AI tells"
+- "Use $avoid-ai-writing to make this sound less like AI"
+- "Use $avoid-ai-writing in detect mode and just flag issues"
+- "Use $avoid-ai-writing with the docs profile on this section"
 
 In **rewrite mode** (default), the skill returns four sections:
 
@@ -208,28 +185,13 @@ Trigger detect mode with: "detect," "flag only," "audit only," "just flag," "sca
 
 That's 35+ AI tells.
 
-## $avoid token + web app
-
-The community created a Solana token around this project. You can burn $avoid tokens to run the audit skill through a web app:
-
-**[avoid-ai-writing-app.vercel.app](https://avoid-ai-writing-app.vercel.app)** — paste text, burn 1,000 $avoid, get a full audit + rewrite. Every token burned is permanently removed from circulation.
-
-| | |
-|---|---|
-| Web App | [avoid-ai-writing-app.vercel.app](https://avoid-ai-writing-app.vercel.app) |
-| DexScreener | [dexscreener.com/solana/4b5m...](https://dexscreener.com/solana/4b5mprekzapcwybrsbbaiewtk4amck62rpcznjcxz69m) |
-| Telegram | [t.me/avoidaiwriting](https://t.me/avoidaiwriting) |
-| X Community | [x.com/i/communities/2036440377356591415](https://x.com/i/communities/2036440377356591415) |
-| CA | `BsidWuYJnayqMXVsLGr34524vmZ1BrWFhPer3198pump` |
-
 ## Credits
 
 Pattern research informed by:
 - [Pangram Labs](https://www.pangram.com/) AI detection research — structural regularity insights, vocabulary flags from a decoder-only classifier trained on 28M human documents
 - Wikipedia's [Signs of AI-generated text](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) documentation — the canonical reference for AI writing tells, maintained by Wikipedia editors
-- [blader/humanizer](https://github.com/blader/humanizer) Claude Code skill
+- [blader/humanizer](https://github.com/blader/humanizer)
 - [brandonwise/humanizer](https://github.com/brandonwise/humanizer) — tiered vocabulary system, statistical analysis research (burstiness, sentence length variation, trigram repetition), and rewrite philosophy
-- [OpenClaw](https://github.com/openclaw/openclaw) humanizer skill ecosystem — community patterns and vocabulary research
 
 Authored by [Conor Bronsdon](https://github.com/conorbronsdon) · [LinkedIn](https://www.linkedin.com/in/conorbronsdon/) · [Chain of Thought podcast](https://chainofthought.show)
 

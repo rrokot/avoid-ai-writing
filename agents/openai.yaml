@@ -1,0 +1,8 @@
+interface:
+  display_name: "Avoid AI Writing"
+  short_description: "Audit and rewrite text to remove AI-writing patterns"
+  brand_color: "#2563EB"
+  default_prompt: "Use $avoid-ai-writing to detect AI-sounding patterns in this draft and rewrite only the lines that need it."
+
+policy:
+  allow_implicit_invocation: true

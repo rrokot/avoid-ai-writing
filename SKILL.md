@@ -1,15 +1,12 @@
 ---
 name: avoid-ai-writing
-description: Audit and rewrite content to remove AI writing patterns ("AI-isms"). Use this skill when asked to "remove AI-isms," "clean up AI writing," "edit writing for AI patterns," "audit writing for AI tells," or "make this sound less like AI." Supports a detection-only mode that flags patterns without rewriting.
-version: 3.3.1
-license: MIT
-compatibility: Any AI coding assistant that supports agentskills.io SKILL.md format (Claude Code, Cursor, VS Code Copilot, Hermes Agent, OpenHands, etc.) or OpenClaw. No external tools or APIs required.
+description: Audit or rewrite text to remove AI writing patterns ("AI-isms") and make it sound more natural. Use this skill when asked to "remove AI-isms," "clean up AI writing," "edit writing for AI patterns," "audit writing for AI tells," "flag AI patterns," or "make this sound less like AI." Supports `rewrite` and `detect` modes.
 metadata:
+  short-description: Audit and rewrite text to remove AI-sounding patterns
   author: Conor Bronsdon
+  source_repo: conorbronsdon/avoid-ai-writing
+  license: MIT
   tags: writing editing voice quality
-  agentskills_spec: "1.0"
-  openclaw:
-    emoji: "\u270D\uFE0F"
 ---
 
 # Avoid AI Writing — Audit & Rewrite
