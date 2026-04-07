@@ -188,7 +188,7 @@ Pattern research informed by:
 - [blader/humanizer](https://github.com/blader/humanizer)
 - [brandonwise/humanizer](https://github.com/brandonwise/humanizer) — tiered vocabulary system, statistical analysis research (burstiness, sentence length variation, trigram repetition), and rewrite philosophy
 
-Authored by [Conor Bronsdon](https://github.com/conorbronsdon) · [LinkedIn](https://www.linkedin.com/in/conorbronsdon/) · [Chain of Thought podcast](https://chainofthought.show)
+Adapted from the original project by [Conor Bronsdon](https://github.com/conorbronsdon): [conorbronsdon/avoid-ai-writing](https://github.com/conorbronsdon/avoid-ai-writing)
 
 ## License
 
